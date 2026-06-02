@@ -1,6 +1,30 @@
 ﻿#include <iostream>
+#include <fstream>
+#include <string>
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    std::ifstream readFile("start.md");
+
+    if (readFile.is_open())
+    {
+        std::string data;
+
+        std::getline(readFile, data);
+
+
+	    // 1. Very bad, not this example. Check title
+        if (data.find("#") != std::string::npos)
+        {
+            std::cout << "This title" << std::endl;
+        }
+        else
+        {
+            std::cout << "This NOT title" << std::endl;
+        }
+    }
+    else
+    {
+        std::cout << "File not opened!";
+    }
 }
