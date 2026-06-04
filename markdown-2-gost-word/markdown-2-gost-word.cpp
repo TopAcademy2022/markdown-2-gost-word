@@ -14,13 +14,13 @@ int main()
 
 
 	    // 1. Very bad, not this example. Check title
-        if (data.find("#") != std::string::npos)
+        if (data.find("- ") != std::string::npos)
         {
-            std::cout << "This title" << std::endl;
+            std::cout << "This marked list" << std::endl;
         }
         else
         {
-            std::cout << "This NOT title" << std::endl;
+            std::cout << "This not marked list" << std::endl;
         }
     }
     else
