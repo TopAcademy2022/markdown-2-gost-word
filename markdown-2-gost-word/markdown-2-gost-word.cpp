@@ -1,6 +1,43 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <string>
+void checkMarkdown(const std::string filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "не удалось открыть файл " << filename << std::endl;
+        return;//не открывается
+    }
+    std::string line;
+    std::getline(file, line);//ПЕРВУЮ строку
+    file.close();
+    bool isMarkdown = false;
+    if (line.find('#') == 0)
+        isMarkdown = true;
+    if (line.find('-') == 0 || line.find('*') == 0 || line.find('+') == 0)
+        isMarkdown = true;
+    if (line.find('>') == 0)
+        isMarkdown = true;
+    if (line.find('[') != std::string::npos && line.find(']') != std::string::npos &&
+        line.find('(') != std::string::npos && line.find(')') != std::string::npos)
+        isMarkdown = true;
+    if (line.find("**") != std::string::npos || line.find("__") != std::string::npos)
+        isMarkdown = true;
+    if (line.find('*') != std::string::npos || line.find('_') != std::string::npos) {
+        if (line.find("**") == std::string::npos && line.find("__") == std::string::npos)
+            isMarkdown = true;
+    }
+    if (line.find("---") != std::string::npos ||
+        line.find("***") != std::string::npos ||
+        line.find("___") != std::string::npos)
+        isMarkdown = true;
+    if (line.find("```") != std::string::npos)
+        isMarkdown = true;
+    std::cout << "Строка: " << line << std::endl;
+    if (isMarkdown)
+        std::cout << "Markdown" << std::endl;
+    else
+        std::cout << "не Markdown" << std::endl;
+}
 
 int main()
 {
@@ -13,7 +50,7 @@ int main()
         std::getline(readFile, data);
 
 
-	    // 1. Very bad, not this example. Check title
+        // 1. Very bad, not this example. Check title
         if (data.find("#") != std::string::npos)
         {
             std::cout << "This title" << std::endl;
@@ -27,34 +64,5 @@ int main()
     {
         std::cout << "File not opened!";
     }
-   ifstream file("input.txt");
-    if (!file.is_open()) {
-        cout << "ne udalos' otkrit' fail\n";
-        return 1;
-    }
-    string line;
-    int lineNumber = 1;
-    while (getline(file, line)) {
-        bool isCode = false;//Проверили всё, что хотели, и только один раз в конце принимаем решение
-        if (line.find('{') != string::npos || line.find('}') != std::string::npos)
-            isCode = true;
-        if (line.find(';') != string::npos)
-            isCode = true;
-        if (line.find("int") != string::npos ||
-            line.find("if") != string::npos ||
-            line.find("else") != string::npos ||
-            line.find("for") != string::npos ||
-            line.find("while") != string::npos ||
-            line.find("return") != string::npos)
-            isCode = true;
-        cout << "stroka " << lineNumber << ": ";
-        if (isCode)
-            cout << "kod - " << line << std::endl;
-        else
-            cout << "tekst - " << line << std::endl;
-        lineNumber++;
-    }
-    file.close();
-    return 0;
-}
+
 }
