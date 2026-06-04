@@ -13,14 +13,14 @@ int main()
         std::getline(readFile, data);
 
 
-	    // 1. Very bad, not this example. Check title
-        if (data.find("#") != std::string::npos)
+        // 1. Very bad, not this example. Check title
+        if (isdigit(data[0]) && data.find(".") == 1)
         {
-            std::cout << "This title" << std::endl;
+            std::cout << "This numeric list" << std::endl;
         }
         else
         {
-            std::cout << "This NOT title" << std::endl;
+            std::cout << "This NOT numeric list" << std::endl;
         }
     }
     else
