@@ -27,34 +27,34 @@ int main()
     {
         std::cout << "File not opened!";
     }
-   ifstream file("input.txt");
+    std::ifstream file("input.txt");
     if (!file.is_open()) {
-        cout << "ne udalos' otkrit' fail\n";
+        std::cout << "ne udalos' otkrit' fail\n";
         return 1;
     }
-    string line;
+    std::string line;
     int lineNumber = 1;
     while (getline(file, line)) {
         bool isCode = false;//Проверили всё, что хотели, и только один раз в конце принимаем решение
-        if (line.find('{') != string::npos || line.find('}') != std::string::npos)
+        if (line.find('{') != std::string::npos || line.find('}') != std::string::npos)
             isCode = true;
-        if (line.find(';') != string::npos)
+        if (line.find(';') != std::string::npos)
             isCode = true;
-        if (line.find("int") != string::npos ||
-            line.find("if") != string::npos ||
-            line.find("else") != string::npos ||
-            line.find("for") != string::npos ||
-            line.find("while") != string::npos ||
-            line.find("return") != string::npos)
+        if (line.find("int") != std::string::npos ||
+            line.find("if") != std::string::npos ||
+            line.find("else") != std::string::npos ||
+            line.find("for") != std::string::npos ||
+            line.find("while") != std::string::npos ||
+            line.find("return") != std::string::npos)
             isCode = true;
-        cout << "stroka " << lineNumber << ": ";
+        std::cout << "stroka " << lineNumber << ": ";
         if (isCode)
-            cout << "kod - " << line << std::endl;
+            std::cout << "kod - " << line << std::endl;
         else
-            cout << "tekst - " << line << std::endl;
+            std::cout << "tekst - " << line << std::endl;
         lineNumber++;
     }
     file.close();
     return 0;
 }
-}
+
