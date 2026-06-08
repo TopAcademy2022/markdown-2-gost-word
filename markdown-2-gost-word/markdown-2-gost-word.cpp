@@ -2,17 +2,12 @@
 #include <fstream>
 #include <string>
 
-int main()
-{
+void func() {
     std::ifstream readFile("start.md");
-
     if (readFile.is_open())
     {
         std::string data;
-
         std::getline(readFile, data);
-
-        // 1. Very bad, not this example. Check title
         if (data.find("0.") != std::string::npos ||
             data.find("1.") != std::string::npos ||
             data.find("2.") != std::string::npos ||
@@ -35,4 +30,10 @@ int main()
     {
         std::cout << "File not opened!";
     }
+
+}
+
+int main()
+{
+    func();
 }
