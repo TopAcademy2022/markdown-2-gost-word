@@ -18,5 +18,27 @@
     <ClCompile Include="markdown-2-gost-word.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="OpenXmlApi.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenXmlService.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpenXmlApi.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="OpenXmlService.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="thirdparty\openxml\net46\DocumentFormat.OpenXml.dll">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="thirdparty\openxml\net46\DocumentFormat.OpenXml.Framework.dll">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
   </ItemGroup>
 </Project>

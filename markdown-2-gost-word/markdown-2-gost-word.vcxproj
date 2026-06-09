@@ -28,12 +28,14 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <CLRSupport>true</CLRSupport>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <CLRSupport>true</CLRSupport>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -41,12 +43,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <CLRSupport>true</CLRSupport>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <CLRSupport>true</CLRSupport>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -124,6 +128,33 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="markdown-2-gost-word.cpp" />
+    <ClCompile Include="OpenXmlApi.cpp" />
+    <ClCompile Include="OpenXmlService.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpenXmlApi.h" />
+    <ClInclude Include="OpenXmlService.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="thirdparty\openxml\net46\DocumentFormat.OpenXml.dll">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </None>
+    <None Include="thirdparty\openxml\net46\DocumentFormat.OpenXml.Framework.dll">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="WindowsBase" />
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>thirdparty\openxml\net46\DocumentFormat.OpenXml.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml.Framework">
+      <HintPath>thirdparty\openxml\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
