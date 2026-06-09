@@ -2,6 +2,12 @@
 #include <fstream>
 #include <string>
 
+bool IsMarkedList(std::string line) {
+    bool res = false;
+    if (line.find("- ") != std::string::npos) res = true;
+    return res;
+}
+
 int main()
 {
     std::ifstream readFile("start.md");
@@ -13,14 +19,13 @@ int main()
         std::getline(readFile, data);
 
 
-	    // 1. Very bad, not this example. Check title
-        if (data.find("#") != std::string::npos)
+        if (IsMarkedList(data))
         {
-            std::cout << "This title" << std::endl;
+            std::cout << "This marked list" << std::endl;
         }
         else
         {
-            std::cout << "This NOT title" << std::endl;
+            std::cout << "This not marked list" << std::endl;
         }
     }
     else
