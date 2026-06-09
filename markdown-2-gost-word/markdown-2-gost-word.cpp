@@ -1,30 +1,17 @@
-﻿#include <iostream>
-#include <fstream>
-#include <string>
+#include "OpenXmlApi.h"
+#include "OpenXmlService.h"
 
-int main()
+extern "C" __declspec(dllexport) int OpenXml_IsAvailable()
 {
-    std::ifstream readFile("start.md");
+    return OpenXmlService_IsAvailable();
+}
 
-    if (readFile.is_open())
-    {
-        std::string data;
+extern "C" __declspec(dllexport) int OpenXml_CreateDocument(const wchar_t* outputPath)
+{
+    return OpenXmlService_CreateDocument(outputPath);
+}
 
-        std::getline(readFile, data);
-
-
-	    // 1. Very bad, not this example. Check title
-        if (data.find("#") != std::string::npos)
-        {
-            std::cout << "This title" << std::endl;
-        }
-        else
-        {
-            std::cout << "This NOT title" << std::endl;
-        }
-    }
-    else
-    {
-        std::cout << "File not opened!";
-    }
+extern "C" __declspec(dllexport) int OpenXml_GetLastError(wchar_t* buffer, int bufferLength)
+{
+    return OpenXmlService_GetLastError(buffer, bufferLength);
 }
