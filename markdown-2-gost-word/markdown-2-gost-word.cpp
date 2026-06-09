@@ -1,17 +1,73 @@
 #include "OpenXmlApi.h"
 #include "OpenXmlService.h"
 
-extern "C" __declspec(dllexport) int OpenXml_IsAvailable()
+#include <iostream>
+#include <string>
+
+namespace
 {
-    return OpenXmlService_IsAvailable();
+    void PrintMenu()
+    {
+        std::wcout << L"\nmarkdown-2-gost-word\n";
+        std::wcout << L"1. Create test DOCX with OpenXML\n";
+        std::wcout << L"0. Exit\n";
+        std::wcout << L"Select: ";
+    }
+
+    void PrintOpenXmlError()
+    {
+        wchar_t error[2048] = {};
+        OpenXmlService_GetLastError(error, 2048);
+
+        if (error[0] != L'\0')
+        {
+            std::wcout << L"OpenXML error: " << error << L"\n";
+        }
+    }
+
+    void CreateTestDocument()
+    {
+        std::wcout << L"Output .docx path: ";
+
+        std::wstring outputPath;
+        std::getline(std::wcin, outputPath);
+
+        int result = OpenXmlService_CreateDocument(outputPath.c_str());
+        if (result == OPENXML_API_OK)
+        {
+            std::wcout << L"Document created.\n";
+            return;
+        }
+
+        std::wcout << L"Document was not created. Code: " << result << L"\n";
+        PrintOpenXmlError();
+    }
 }
 
-extern "C" __declspec(dllexport) int OpenXml_CreateDocument(const wchar_t* outputPath)
+int main()
 {
-    return OpenXmlService_CreateDocument(outputPath);
-}
+    bool isRunning = true;
 
-extern "C" __declspec(dllexport) int OpenXml_GetLastError(wchar_t* buffer, int bufferLength)
-{
-    return OpenXmlService_GetLastError(buffer, bufferLength);
+    while (isRunning)
+    {
+        PrintMenu();
+
+        std::wstring command;
+        std::getline(std::wcin, command);
+
+        if (command == L"1")
+        {
+            CreateTestDocument();
+        }
+        else if (command == L"0")
+        {
+            isRunning = false;
+        }
+        else
+        {
+            std::wcout << L"Unknown menu item.\n";
+        }
+    }
+
+    return 0;
 }
