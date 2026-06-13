@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <fstream>
 #include <string>
+
 void checkMarkdown(const std::string filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
