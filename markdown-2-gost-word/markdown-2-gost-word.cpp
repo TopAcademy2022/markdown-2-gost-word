@@ -38,7 +38,6 @@ void checkMarkdown(const std::string filename) {
     else
         std::cout << "не Markdown" << std::endl;
 }
-
 int main()
 {
     std::ifstream readFile("start.md");
@@ -64,5 +63,3 @@ int main()
     {
         std::cout << "File not opened!";
     }
-
-}
