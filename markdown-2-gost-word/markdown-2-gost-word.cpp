@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
 
 namespace
 {
@@ -10,6 +11,7 @@ namespace
     {
         std::wcout << L"\nmarkdown-2-gost-word\n";
         std::wcout << L"1. Create test DOCX with OpenXML\n";
+        std::wcout << L"2. Read md file\n";
         std::wcout << L"0. Exit\n";
         std::wcout << L"Select: ";
     }
@@ -45,6 +47,42 @@ namespace
     }
 }
 
+enum MdSectionType
+{
+	title,
+    text
+};
+
+MdSectionType* GetSectionTypesFromText(std::string fullText)
+{
+    const char* full = fullText.c_str();
+    MdSectionType* result = new MdSectionType[5];
+
+	do
+	{
+        int i = 0;
+
+        if (full[0] == '#')
+        {
+            result[i] = MdSectionType::title;
+        }
+
+        fullText = fullText.substr(fullText.find_first_of('\n'), fullText.length() - 1);
+    } while (!fullText.empty());
+
+    return result;
+}
+
+XmlServiceStatus ParseSections(MdSectionType* sections)
+{
+	if (MdSectionType::title)
+    {
+        // Parsing concrete section
+	}
+
+    return XmlServiceStatus::ok;
+}
+
 int main()
 {
     bool isRunning = true;
@@ -56,19 +94,32 @@ int main()
         std::wstring command;
         std::getline(std::wcin, command);
 
-        if (command == L"1")
-        {
-            CreateTestDocument();
-        }
-        else if (command == L"0")
-        {
+        if (command == L"0")
             isRunning = false;
-        }
-        else
-        {
-            std::wcout << L"Unknown menu item.\n";
+        if (command == L"1")
+            CreateTestDocument();
+        if (command == L"2") {
+
+            // Read MD
+            std::ifstream file("./example.md");
+            int dataSize = 2048;
+            char* fileData = new char[dataSize]();
+
+            if (file.is_open())
+            {
+                file.read(fileData, dataSize);
+            }
+
+            MdSectionType* sections = GetSectionTypesFromText(fileData);
+            if (sections != nullptr)
+            {
+                XmlServiceStatus result = ParseSections(sections);
+
+                if (result == XmlServiceStatus::ok)
+                {
+                    std::wcout << L"Parsing has been complete.\n";
+                }
+            }
         }
     }
-
-    return 0;
 }
