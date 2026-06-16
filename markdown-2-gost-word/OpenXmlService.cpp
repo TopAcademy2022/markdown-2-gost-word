@@ -77,12 +77,21 @@ namespace
         try
         {
             MainDocumentPart^ mainPart = document->AddMainDocumentPart();
-            mainPart->Document = gcnew Document(
-                gcnew Body(
-                    gcnew Paragraph(
-                        gcnew Run(
-                            gcnew DocumentFormat::OpenXml::Wordprocessing::Text(
-                                "Created by markdown-2-gost-word OpenXML API")))));
+
+            DocumentFormat::OpenXml::Wordprocessing::Text^ text =
+                gcnew DocumentFormat::OpenXml::Wordprocessing::Text(
+                    "Created by markdown-2-gost-word OpenXML API");
+            Run^ run = gcnew Run();
+            Paragraph^ paragraph = gcnew Paragraph();
+            Body^ body = gcnew Body();
+            Document^ wordDocument = gcnew Document();
+
+            run->AppendChild(text);
+            paragraph->AppendChild(run);
+            body->AppendChild(paragraph);
+            wordDocument->AppendChild(body);
+
+            mainPart->Document = wordDocument;
 
             mainPart->Document->Save();
         }
