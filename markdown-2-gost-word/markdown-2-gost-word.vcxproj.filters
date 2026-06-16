@@ -18,9 +18,6 @@
     <ClCompile Include="markdown-2-gost-word.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="OpenXmlApi.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="OpenXmlService.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>

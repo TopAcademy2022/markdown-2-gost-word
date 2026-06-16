@@ -16,8 +16,9 @@ namespace
 
     void PrintOpenXmlError()
     {
-        wchar_t error[2048] = {};
-        OpenXmlService_GetLastError(error, 2048);
+        constexpr int SIZE = 2048;
+        wchar_t error[SIZE] = {};
+        OpenXmlService_GetLastError(error, SIZE);
 
         if (error[0] != L'\0')
         {
@@ -33,7 +34,7 @@ namespace
         std::getline(std::wcin, outputPath);
 
         int result = OpenXmlService_CreateDocument(outputPath.c_str());
-        if (result == OPENXML_API_OK)
+        if (result == XmlServiceStatus::ok)
         {
             std::wcout << L"Document created.\n";
             return;

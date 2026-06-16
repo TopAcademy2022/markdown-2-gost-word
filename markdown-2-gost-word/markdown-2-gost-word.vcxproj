@@ -128,7 +128,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="markdown-2-gost-word.cpp" />
-    <ClCompile Include="OpenXmlApi.cpp" />
     <ClCompile Include="OpenXmlService.cpp" />
   </ItemGroup>
   <ItemGroup>

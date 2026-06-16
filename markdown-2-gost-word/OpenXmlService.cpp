@@ -100,7 +100,7 @@ namespace
             delete document;
         }
 
-        return OPENXML_API_OK;
+        return XmlServiceStatus::ok;
     }
 }
 
@@ -108,7 +108,7 @@ int OpenXmlService_IsAvailable()
 {
     OpenXmlAssemblyResolver::Install();
     SetLastError(String::Empty);
-    return OPENXML_API_OK;
+    return XmlServiceStatus::ok;
 }
 
 int OpenXmlService_CreateDocument(const wchar_t* outputPath)
@@ -116,7 +116,7 @@ int OpenXmlService_CreateDocument(const wchar_t* outputPath)
     if (outputPath == nullptr || outputPath[0] == L'\0')
     {
         SetLastError("Output path is empty.");
-        return OPENXML_API_INVALID_ARGUMENT;
+        return XmlServiceStatus::invalid;
     }
 
     try
@@ -128,12 +128,12 @@ int OpenXmlService_CreateDocument(const wchar_t* outputPath)
     catch (Exception^ ex)
     {
         SetLastError(ex->ToString());
-        return OPENXML_API_OPENXML_ERROR;
+        return XmlServiceStatus::open_xml_error;
     }
     catch (...)
     {
         SetLastError("Unknown native exception.");
-        return OPENXML_API_UNKNOWN_ERROR;
+        return XmlServiceStatus::unknown_error;
     }
 }
 
@@ -141,7 +141,7 @@ int OpenXmlService_GetLastError(wchar_t* buffer, int bufferLength)
 {
     if (buffer == nullptr || bufferLength <= 0)
     {
-        return OPENXML_API_INVALID_ARGUMENT;
+        return XmlServiceStatus::invalid;
     }
 
     String^ lastError = g_lastError;
