@@ -1,30 +1,74 @@
-﻿#include <iostream>
-#include <fstream>
+#include "OpenXmlApi.h"
+#include "OpenXmlService.h"
+
+#include <iostream>
 #include <string>
+
+namespace
+{
+    void PrintMenu()
+    {
+        std::wcout << L"\nmarkdown-2-gost-word\n";
+        std::wcout << L"1. Create test DOCX with OpenXML\n";
+        std::wcout << L"0. Exit\n";
+        std::wcout << L"Select: ";
+    }
+
+    void PrintOpenXmlError()
+    {
+        constexpr int SIZE = 2048;
+        wchar_t error[SIZE] = {};
+        OpenXmlService_GetLastError(error, SIZE);
+
+        if (error[0] != L'\0')
+        {
+            std::wcout << L"OpenXML error: " << error << L"\n";
+        }
+    }
+
+    void CreateTestDocument()
+    {
+        std::wcout << L"Output .docx path: ";
+
+        std::wstring outputPath;
+        std::getline(std::wcin, outputPath);
+
+        int result = OpenXmlService_CreateDocument(outputPath.c_str());
+        if (result == XmlServiceStatus::ok)
+        {
+            std::wcout << L"Document created.\n";
+            return;
+        }
+
+        std::wcout << L"Document was not created. Code: " << result << L"\n";
+        PrintOpenXmlError();
+    }
+}
 
 int main()
 {
-    std::ifstream readFile("start.md");
+    bool isRunning = true;
 
-    if (readFile.is_open())
+    while (isRunning)
     {
-        std::string data;
+        PrintMenu();
 
-        std::getline(readFile, data);
+        std::wstring command;
+        std::getline(std::wcin, command);
 
-
-	    // 1. Very bad, not this example. Check title
-        if (data.find("#") != std::string::npos)
+        if (command == L"1")
         {
-            std::cout << "This title" << std::endl;
+            CreateTestDocument();
+        }
+        else if (command == L"0")
+        {
+            isRunning = false;
         }
         else
         {
-            std::cout << "This NOT title" << std::endl;
+            std::wcout << L"Unknown menu item.\n";
         }
     }
-    else
-    {
-        std::cout << "File not opened!";
-    }
+
+    return 0;
 }
