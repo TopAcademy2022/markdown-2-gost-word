@@ -128,9 +128,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="markdown-2-gost-word.cpp" />
+    <ClCompile Include="MdSection.cpp" />
+    <ClCompile Include="MdSectionConverter.cpp" />
+    <ClCompile Include="MdSectionParser.cpp" />
+    <ClCompile Include="MdSectionRule.cpp" />
     <ClCompile Include="OpenXmlService.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MdSection.h" />
+    <ClInclude Include="MdSectionConverter.h" />
+    <ClInclude Include="MdSectionParser.h" />
+    <ClInclude Include="MdSectionRule.h" />
+    <ClInclude Include="MdSectionType.h" />
     <ClInclude Include="OpenXmlApi.h" />
     <ClInclude Include="OpenXmlService.h" />
   </ItemGroup>

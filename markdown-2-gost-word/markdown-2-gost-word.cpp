@@ -5,6 +5,10 @@
 #include <string>
 #include <fstream>
 
+#include "MdSection.h"
+#include "MdSectionConverter.h"
+#include "MdSectionParser.h"
+
 namespace
 {
     void PrintMenu()
@@ -18,9 +22,9 @@ namespace
 
     void PrintOpenXmlError()
     {
-        constexpr int SIZE = 2048;
-        wchar_t error[SIZE] = {};
-        OpenXmlService_GetLastError(error, SIZE);
+        constexpr int DEFAULT_BUFFER_SIZE = 2048;
+        wchar_t error[DEFAULT_BUFFER_SIZE] = {};
+        OpenXmlService_GetLastError(error, DEFAULT_BUFFER_SIZE);
 
         if (error[0] != L'\0')
         {
@@ -45,42 +49,6 @@ namespace
         std::wcout << L"Document was not created. Code: " << result << L"\n";
         PrintOpenXmlError();
     }
-}
-
-enum MdSectionType
-{
-	title,
-    text
-};
-
-MdSectionType* GetSectionTypesFromText(std::string fullText)
-{
-    const char* full = fullText.c_str();
-    MdSectionType* result = new MdSectionType[5];
-
-	do
-	{
-        int i = 0;
-
-        if (full[0] == '#')
-        {
-            result[i] = MdSectionType::title;
-        }
-
-        fullText = fullText.substr(fullText.find_first_of('\n'), fullText.length() - 1);
-    } while (!fullText.empty());
-
-    return result;
-}
-
-XmlServiceStatus ParseSections(MdSectionType* sections)
-{
-	if (MdSectionType::title)
-    {
-        // Parsing concrete section
-	}
-
-    return XmlServiceStatus::ok;
 }
 
 int main()
@@ -110,10 +78,11 @@ int main()
                 file.read(fileData, dataSize);
             }
 
-            MdSectionType* sections = GetSectionTypesFromText(fileData);
-            if (sections != nullptr)
+            std::list<MdSection*> sections = MdSectionParser::ParseText(fileData);
+            if (!sections.empty())
             {
-                XmlServiceStatus result = ParseSections(sections);
+                MdSectionConverter converter(sections);
+                XmlServiceStatus result = converter.SaveToGostWord();
 
                 if (result == XmlServiceStatus::ok)
                 {
