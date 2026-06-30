@@ -3,6 +3,11 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
+
+#include "MdSection.h"
+#include "MdSectionConverter.h"
+#include "MdSectionParser.h"
 
 namespace
 {
@@ -10,15 +15,16 @@ namespace
     {
         std::wcout << L"\nmarkdown-2-gost-word\n";
         std::wcout << L"1. Create test DOCX with OpenXML\n";
+        std::wcout << L"2. Read md file\n";
         std::wcout << L"0. Exit\n";
         std::wcout << L"Select: ";
     }
 
     void PrintOpenXmlError()
     {
-        constexpr int SIZE = 2048;
-        wchar_t error[SIZE] = {};
-        OpenXmlService_GetLastError(error, SIZE);
+        constexpr int DEFAULT_BUFFER_SIZE = 2048;
+        wchar_t error[DEFAULT_BUFFER_SIZE] = {};
+        OpenXmlService_GetLastError(error, DEFAULT_BUFFER_SIZE);
 
         if (error[0] != L'\0')
         {
@@ -56,19 +62,33 @@ int main()
         std::wstring command;
         std::getline(std::wcin, command);
 
-        if (command == L"1")
-        {
-            CreateTestDocument();
-        }
-        else if (command == L"0")
-        {
+        if (command == L"0")
             isRunning = false;
-        }
-        else
-        {
-            std::wcout << L"Unknown menu item.\n";
+        if (command == L"1")
+            CreateTestDocument();
+        if (command == L"2") {
+
+            // Read MD
+            std::ifstream file("./example.md");
+            int dataSize = 2048;
+            char* fileData = new char[dataSize]();
+
+            if (file.is_open())
+            {
+                file.read(fileData, dataSize);
+            }
+
+            std::list<MdSection*> sections = MdSectionParser::ParseText(fileData);
+            if (!sections.empty())
+            {
+                MdSectionConverter converter(sections);
+                XmlServiceStatus result = converter.SaveToGostWord();
+
+                if (result == XmlServiceStatus::ok)
+                {
+                    std::wcout << L"Parsing has been complete.\n";
+                }
+            }
         }
     }
-
-    return 0;
 }
