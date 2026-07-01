@@ -17,4 +17,6 @@ private:
 
 public:
 	MdSection(std::string text, MdSectionType sectionType);
+
+	MdSectionType GetSectionType();
 };

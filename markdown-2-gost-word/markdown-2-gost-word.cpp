@@ -78,10 +78,16 @@ int main()
                 file.read(fileData, dataSize);
             }
 
+            // Separate our text to logical sections
+            // List with our logical sections
             std::list<MdSection*> sections = MdSectionParser::ParseText(fileData);
-            if (!sections.empty())
+
+            // If list not empty
+        	if (!sections.empty())
             {
+                // Converting markdown logical sections to word sections
                 MdSectionConverter converter(sections);
+                // Save word sections to word file
                 XmlServiceStatus result = converter.SaveToGostWord();
 
                 if (result == XmlServiceStatus::ok)

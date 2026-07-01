@@ -82,6 +82,7 @@ namespace
                 gcnew DocumentFormat::OpenXml::Wordprocessing::Text(
                     "Created by markdown-2-gost-word OpenXML API");
             Run^ run = gcnew Run();
+
             Paragraph^ paragraph = gcnew Paragraph();
             Body^ body = gcnew Body();
             Document^ wordDocument = gcnew Document();

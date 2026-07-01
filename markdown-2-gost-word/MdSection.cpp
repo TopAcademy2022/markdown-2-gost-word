@@ -26,3 +26,8 @@ MdSection::MdSection(std::string text, MdSectionType sectionType)
 		// Throw new error
 	}
 }
+
+MdSectionType MdSection::GetSectionType()
+{
+	return this->_sectionType;
+}
