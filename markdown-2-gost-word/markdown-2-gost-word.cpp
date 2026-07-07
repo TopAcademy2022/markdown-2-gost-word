@@ -88,7 +88,7 @@ int main()
                 // Converting markdown logical sections to word sections
                 MdSectionConverter converter(sections);
                 // Save word sections to word file
-                XmlServiceStatus result = converter.SaveToGostWord();
+                XmlServiceStatus result = converter.SaveToGostWord(L"./result.docx");
 
                 if (result == XmlServiceStatus::ok)
                 {
