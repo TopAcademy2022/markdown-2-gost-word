@@ -5,19 +5,14 @@ std::list<MdSection*> MdSectionParser::ParseText(std::string text)
 	std::list<MdSection*> result;
     MdSectionRule mdRules;
 
-    const char* tmpText = text.c_str();
-
-    do
+    if (!text.empty())
     {
-        // Find first
-        MdSectionType section = mdRules.GetTypeFromStartRules(text);
-
-        // Find next
-
-        // Substring
-
-        // If not sections => set empty
-    } while (!text.empty());
+        const MdSectionType* section = mdRules.GetTypeFromStartRules(text);
+        if (section != nullptr)
+        {
+            result.push_back(new MdSection(text, *section));
+        }
+    }
 
     return result;
 }

@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClrParser.cpp" />
     <ClCompile Include="GostWordSection.cpp" />
     <ClCompile Include="markdown-2-gost-word.cpp" />
     <ClCompile Include="MdSection.cpp" />
@@ -136,6 +137,7 @@
     <ClCompile Include="OpenXmlService.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClrParser.h" />
     <ClInclude Include="GostWordSection.h" />
     <ClInclude Include="MdSection.h" />
     <ClInclude Include="MdSectionConverter.h" />

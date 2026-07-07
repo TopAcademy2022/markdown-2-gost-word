@@ -11,9 +11,9 @@ Microsoft Word `.docx`, оформленный по правилам РФ ГОС
 ## English Summary
 
 `markdown-2-gost-word` converts Markdown documents into Microsoft Word `.docx`
-files formatted according to Russian GOST-style academic/report requirements. The
-goal is to reduce manual formatting work and make document styling configurable for
-different rule sets.
+files formatted according to Russian national standards (GOST R) for academic and
+report documents. The goal is to reduce manual formatting work and make document
+styling configurable for different rule sets.
 
 ## Идея проекта
 
@@ -129,6 +129,7 @@ markdown-2-gost-word input.md output.docx --rules gost-rf
 - `MdSectionRule` — правила определения и преобразования секций.
 - `MdSectionConverter` — конвертация Markdown-секций в Word/GOST-представление.
 - `GostWordSection` — модель секции Word-документа с ГОСТ-оформлением.
+- `ClrParser` — C++/CLI-слой для создания CLR/OpenXML-объектов по правилам.
 - `OpenXmlService` — слой генерации `.docx` через OpenXML.
 
 ## Roadmap

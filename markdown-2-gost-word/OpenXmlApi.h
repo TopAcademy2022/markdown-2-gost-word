@@ -1,6 +1,6 @@
 #pragma once
 
-enum XmlServiceStatus
+enum class XmlServiceStatus
 {
 	ok,
 	invalid,

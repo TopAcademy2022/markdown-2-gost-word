@@ -3,10 +3,9 @@
 bool MdSection::CheckCorrectType(std::string text, MdSectionType sectionType)
 {
 	MdSectionRule mdRules;
+	const MdSectionType* detectedType = mdRules.GetTypeFromStartRules(text);
 
-	MdSectionType section = mdRules.GetTypeFromStartRules(text);
-
-	if (section == sectionType)
+	if (detectedType != nullptr && sectionType == *detectedType)
 	{
 		return true;
 	}
@@ -15,6 +14,7 @@ bool MdSection::CheckCorrectType(std::string text, MdSectionType sectionType)
 }
 
 MdSection::MdSection(std::string text, MdSectionType sectionType)
+	: _sectionType(MdSectionType::text)
 {
 	if (CheckCorrectType(text, sectionType))
 	{

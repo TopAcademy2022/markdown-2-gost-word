@@ -16,6 +16,7 @@ private:
 
 public:
 	MdSectionConverter(std::list<MdSection*> sections);
+	~MdSectionConverter();
 
 	XmlServiceStatus SaveToGostWord();
 };

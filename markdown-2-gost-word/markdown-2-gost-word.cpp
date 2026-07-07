@@ -40,7 +40,7 @@ namespace
         std::getline(std::wcin, outputPath);
 
         int result = OpenXmlService_CreateDocument(outputPath.c_str());
-        if (result == XmlServiceStatus::ok)
+        if (result == static_cast<int>(XmlServiceStatus::ok))
         {
             std::wcout << L"Document created.\n";
             return;

@@ -1,7 +1,7 @@
 #pragma once
 
 
-enum MdSectionType
+enum class MdSectionType
 {
 	title,
 	text
