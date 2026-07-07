@@ -39,7 +39,7 @@ MdSectionConverter::~MdSectionConverter()
 XmlServiceStatus MdSectionConverter::SaveToGostWord()
 {
 	//// Maybe use OpenXmlService. Combine all sections (Run, Paragraph) to OpenXml Document
-	//Document^ body = GostWordSection::CombineListSections(this->_gostWordSection);
+	Document^ body = GostWordSection::CombineListSections(this->_gostWordSection);
 	//// Use OpenXmlService for save document
 	//int result = OpenXmlService_CreateDocument(L"result.docx", body);
 	//// Return creating status
