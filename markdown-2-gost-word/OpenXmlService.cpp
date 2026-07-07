@@ -103,6 +103,11 @@ namespace
 
         return static_cast<int>(XmlServiceStatus::ok);
     }
+
+    int CreateDocumentCore(String^ outputPath, Document^ body)
+    {
+        return static_cast<int>(XmlServiceStatus::ok);
+    }
 }
 
 int OpenXmlService_IsAvailable()
@@ -125,6 +130,32 @@ int OpenXmlService_CreateDocument(const wchar_t* outputPath)
         OpenXmlAssemblyResolver::Install();
         SetLastError(String::Empty);
         return CreateDocumentCore(gcnew String(outputPath));
+    }
+    catch (Exception^ ex)
+    {
+        SetLastError(ex->ToString());
+        return static_cast<int>(XmlServiceStatus::open_xml_error);
+    }
+    catch (...)
+    {
+        SetLastError("Unknown native exception.");
+        return static_cast<int>(XmlServiceStatus::unknown_error);
+    }
+}
+
+int OpenXmlService_CreateDocument(const wchar_t* outputPath, Document^ body)
+{
+    if (outputPath == nullptr || outputPath[0] == L'\0')
+    {
+        SetLastError("Output path is empty.");
+        return static_cast<int>(XmlServiceStatus::invalid);
+    }
+
+    try
+    {
+        OpenXmlAssemblyResolver::Install();
+        SetLastError(String::Empty);
+        return CreateDocumentCore(gcnew String(outputPath), body);
     }
     catch (Exception^ ex)
     {

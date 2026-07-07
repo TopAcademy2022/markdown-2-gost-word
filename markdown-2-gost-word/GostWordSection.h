@@ -1,7 +1,9 @@
 #pragma once
 
+#include <list>
 #include <vcclr.h>
 
+using namespace DocumentFormat::OpenXml::Wordprocessing;
 
 class GostWordSection
 {
@@ -14,4 +16,6 @@ public:
 	explicit GostWordSection(array<System::Object^>^ sectionData);
 
 	array<System::Object^>^ GetSectionData();
+
+	static Document^ CombineListSections(std::list<GostWordSection*> sections);
 };
