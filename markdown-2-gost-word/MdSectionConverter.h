@@ -1,10 +1,14 @@
 #pragma once
 
+
+#include <functional>
 #include <list>
 
 #include "GostWordSection.h"
 #include "MdSection.h"
 #include "OpenXmlApi.h"
+#include "ClrParser.h"
+#include "OpenXmlService.h"
 
 
 class MdSectionConverter
