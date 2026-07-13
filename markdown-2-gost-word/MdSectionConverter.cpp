@@ -1,5 +1,6 @@
 #include "MdSectionConverter.h"
 #include<numeric>
+
 // 0. We need to obtain a list of rules.
 // 0.1. Create an object with a set of rules
 // 1. Convert each section of the MD file to each section of the Gost Word file
@@ -13,9 +14,7 @@ void MdSectionConverter::ConvertToGostSections(std::list<MdSection*> sections)
 	for (auto section : sections)
 	{
 		// For md section get clr objects
-		std::list<std::string> names;// = mdRules.GetOXmlTypename(section->GetSectionType());
-
-		names = { "run", "paragraph style indent"};
+		std::list<std::string> names = mdRules.GetOXmlTypename(section->GetSectionType());
 
 		System::String^ rule = names.empty()
 			? System::String::Empty
