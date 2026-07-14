@@ -36,7 +36,7 @@ MdSectionConverter::~MdSectionConverter()
 	}
 }
 
-XmlServiceStatus MdSectionConverter::SaveToGostWord()
+XmlServiceStatus MdSectionConverter::SaveToGostWord(const std::wstring& outputPath)
 {
 	//// Maybe use OpenXmlService. Combine all sections (Run, Paragraph) to OpenXml Document
 	Document^ body = GostWordSection::CombineListSections(this->_gostWordSection);
