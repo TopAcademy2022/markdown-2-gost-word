@@ -1,4 +1,5 @@
 #include "MdSectionConverter.h"
+#include<numeric>
 
 // 0. We need to obtain a list of rules.
 // 0.1. Create an object with a set of rules
@@ -14,9 +15,19 @@ void MdSectionConverter::ConvertToGostSections(std::list<MdSection*> sections)
 	{
 		// For md section get clr objects
 		std::list<std::string> names = mdRules.GetOXmlTypename(section->GetSectionType());
+
 		System::String^ rule = names.empty()
 			? System::String::Empty
-			: gcnew System::String(names.front().c_str()); // Not true
+			: gcnew System::String(
+				std::accumulate(
+					names.begin(),
+					names.end(),
+					std::string(""),
+					[](const std::string& a, const std::string& b) {
+						return a.empty() ? b : a + "; " + b + ";";
+					}
+				).c_str()
+			);
 
 		// Add clr gost xml objects to list
 		_gostWordSection.push_back(new GostWordSection(parser->CreateObjectsFromRule(rule)));
