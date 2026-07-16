@@ -43,7 +43,7 @@ XmlServiceStatus MdSectionConverter::SaveToGostWord()
 	// Use OpenXmlService for save document
 	int result = OpenXmlService_CreateDocument(L"result.docx", body);
 	// Return creating status
-	//return static_cast<XmlServiceStatus>(result);
+	return static_cast<XmlServiceStatus>(result);
 
-	return XmlServiceStatus::ok;
+	//return XmlServiceStatus::ok;
 }
