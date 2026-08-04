@@ -1,16 +1,48 @@
 #include "MdSectionParser.h"
+#include <sstream>
+#include <string>
+#include <list>
 
 std::list<MdSection*> MdSectionParser::ParseText(std::string text)
 {
-	std::list<MdSection*> result;
+    std::list<MdSection*> result;
     MdSectionRule mdRules;
 
-    if (!text.empty())
+    if (text.empty())
     {
-        const MdSectionType* section = mdRules.GetTypeFromStartRules(text);
-        if (section != nullptr)
+        return result;
+    }
+
+    std::istringstream stream(text);
+    std::string line;
+    std::string segment;
+
+    while (std::getline(stream, line))
+    {
+        if (line.empty())
         {
-            result.push_back(new MdSection(text, *section));
+            if (!segment.empty())
+            {
+                auto sectionType = mdRules.GetTypeFromStartRules(segment);
+                if (sectionType)
+                {
+                    result.push_back(new MdSection(segment, *sectionType));
+                }
+                segment.clear();
+            }
+        }
+        else
+        {
+            segment += line + "\n";
+        }
+    }
+
+    if (!segment.empty())
+    {
+        auto sectionType = mdRules.GetTypeFromStartRules(segment);
+        if (sectionType)
+        {
+            result.push_back(new MdSection(segment, *sectionType));
         }
     }
 
