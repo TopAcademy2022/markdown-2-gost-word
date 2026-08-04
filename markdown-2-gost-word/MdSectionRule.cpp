@@ -17,7 +17,7 @@ std::list<std::string> MdSectionRule::GetOXmlTypename(MdSectionType type)
 {
 	if (type == MdSectionType::title)
 	{
-		return { "Paragraph", "Run" };
+		return { "Paragraph", "Run", "Text {Value = %}" };
 	}
 
 	return { "Paragraph" };

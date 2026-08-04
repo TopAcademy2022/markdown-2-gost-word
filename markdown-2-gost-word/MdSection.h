@@ -19,4 +19,9 @@ public:
 	MdSection(std::string text, MdSectionType sectionType);
 
 	MdSectionType GetSectionType();
+
+	std::string GetText()
+	{
+		return this->_text;
+	}
 };
