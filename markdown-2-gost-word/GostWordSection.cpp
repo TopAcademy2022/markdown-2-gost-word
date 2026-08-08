@@ -1,22 +1,33 @@
 #include "GostWordSection.h"
 
 GostWordSection::GostWordSection()
-	: _sectionData(gcnew array<System::Object^>(0))
+	: _sectionData(nullptr)
 {
 }
 
-GostWordSection::GostWordSection(array<System::Object^>^ sectionData)
-	: _sectionData(sectionData == nullptr ? gcnew array<System::Object^>(0) : sectionData)
+GostWordSection::GostWordSection(OpenXmlElement^ sectionData)
+	: _sectionData(sectionData)
 {
 }
 
-array<System::Object^>^ GostWordSection::GetSectionData()
+OpenXmlElement^ GostWordSection::GetSectionData()
 {
 	return _sectionData;
 }
 
-Document^ GostWordSection::CombineListSections(std::list<GostWordSection*> sections)
+Document^ GostWordSection::CombineListSections(std::list<GostWordSection> sections)
 {
-	// TODO: how combine to 1 Document
-	return gcnew Document();
+	Body^ body = gcnew Body();
+	for (GostWordSection& section : sections)
+	{
+		OpenXmlElement^ root = section.GetSectionData();
+		if (root != nullptr)
+		{
+			body->AppendChild<OpenXmlElement^>(root);
+		}
+	}
+
+	Document^ document = gcnew Document();
+	document->AppendChild<Body^>(body);
+	return document;
 }
