@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <iterator>
 
 #include "MdSection.h"
 #include "MdSectionConverter.h"
@@ -69,14 +70,10 @@ int main()
         if (command == L"2") {
 
             // Read MD
-            std::ifstream file("./example.md");
-            int dataSize = 2048;
-            char* fileData = new char[dataSize]();
-
-            if (file.is_open())
-            {
-                file.read(fileData, dataSize);
-            }
+			std::ifstream file("./example.md", std::ios::binary);
+			std::string fileData(
+				(std::istreambuf_iterator<char>(file)),
+				std::istreambuf_iterator<char>());
 
             // Separate our text to logical sections
             // List with our logical sections
@@ -95,6 +92,11 @@ int main()
                     std::wcout << L"Parsing has been complete.\n";
                 }
             }
+
+			for (MdSection* section : sections)
+			{
+				delete section;
+			}
         }
     }
 }

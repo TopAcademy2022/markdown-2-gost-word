@@ -7,12 +7,11 @@ using namespace System::Collections::Generic;
 public ref class ClrParser
 {
 private:
-	Object^ CreateObject(System::String^ name, String^ sectionText);
+	System::Object^ CreateObject(System::String^ name, System::String^ sectionText);
+	void SetProperty(System::Object^ object, System::String^ name, System::String^ value);
 
 public:
-	// 1. Extract a code from text (rules)
-	void GetCodeFromRule(System::String^ rule);
-
-	// 2. Create CLR objects from the list of objects
-	List<OpenXmlElement^>^ CreateObjectsFromRule(System::String^ rule, MdSection* section);
+	// Creates one OpenXML tree. Every next rule item becomes a child of the
+	// previous one, e.g. Paragraph; Run; Text {Value = %}.
+	OpenXmlElement^ CreateObjectFromRule(System::String^ rule, MdSection* section);
 };

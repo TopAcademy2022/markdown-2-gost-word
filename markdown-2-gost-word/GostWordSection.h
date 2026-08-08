@@ -11,13 +11,13 @@ class GostWordSection
 {
 private:
 	// Set of OpenXML objects for the first section of GOST Word
-	gcroot<List<OpenXmlElement^>^> _sectionData;
+	gcroot<OpenXmlElement^> _sectionData;
 
 public:
 	GostWordSection();
-	explicit GostWordSection(List<OpenXmlElement^>^ sectionData);
+	explicit GostWordSection(OpenXmlElement^ sectionData);
 
-	List<OpenXmlElement^>^ GetSectionData();
+	OpenXmlElement^ GetSectionData();
 
 	static Document^ CombineListSections(std::list<GostWordSection> sections);
 };

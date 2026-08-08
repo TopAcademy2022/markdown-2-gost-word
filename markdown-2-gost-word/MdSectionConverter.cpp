@@ -30,7 +30,7 @@ void MdSectionConverter::ConvertToGostSections(std::list<MdSection*> sections)
 			);
 
 		// Add clr gost xml objects to list
-		_gostWordSection.push_back(GostWordSection(parser->CreateObjectsFromRule(rule, section)));
+		_gostWordSection.push_back(GostWordSection(parser->CreateObjectFromRule(rule, section)));
 	}
 }
 

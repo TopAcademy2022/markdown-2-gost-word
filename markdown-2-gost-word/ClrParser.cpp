@@ -8,70 +8,152 @@ using namespace System;
 using namespace System::Reflection;
 using namespace System::Collections::Generic;
 
-void ClrParser::GetCodeFromRule(System::String^ rule)
+namespace
 {
-	(void)rule;
+	String^ FromUtf8(const std::string& value)
+	{
+		array<Byte>^ bytes = gcnew array<Byte>(static_cast<int>(value.size()));
+		for (int index = 0; index < bytes->Length; ++index)
+		{
+			bytes[index] = static_cast<Byte>(value[index]);
+		}
+
+		return System::Text::Encoding::UTF8->GetString(bytes);
+	}
+}
+
+void ClrParser::SetProperty(Object^ object, String^ name, String^ value)
+{
+	Type^ objectType = object->GetType();
+	PropertyInfo^ property = objectType->GetProperty(name);
+
+	// The compact rule language uses Value for the textual value of Text.
+	if (property == nullptr && name == "Value"
+		&& objectType == DocumentFormat::OpenXml::Wordprocessing::Text::typeid)
+	{
+		property = objectType->GetProperty("Text");
+	}
+
+	if (property == nullptr || !property->CanWrite)
+	{
+		throw gcnew Exception(
+			"Unknown or read-only property '" + name + "' on " + objectType->FullName);
+	}
+
+	Object^ convertedValue;
+	if (property->PropertyType == String::typeid)
+	{
+		convertedValue = value;
+	}
+	else
+	{
+		ConstructorInfo^ stringConstructor = property->PropertyType->GetConstructor(
+			gcnew array<Type^> { String::typeid });
+
+		convertedValue = stringConstructor != nullptr
+			? stringConstructor->Invoke(gcnew array<Object^> { value })
+			: Convert::ChangeType(value, property->PropertyType);
+	}
+
+	property->SetValue(object, convertedValue, nullptr);
 }
 
 Object^ ClrParser::CreateObject(String^ name, String^ sectionText)
 {
-    if (name->Contains("{"))
-    {
-		// Cut {Value = %}
-        // name = name->Substring();
-    }
+	String^ definition = name->Trim();
+	String^ properties = nullptr;
+	int propertiesStart = definition->IndexOf('{');
+
+	if (propertiesStart >= 0)
+	{
+		int propertiesEnd = definition->LastIndexOf('}');
+		if (propertiesEnd <= propertiesStart)
+		{
+			throw gcnew FormatException("Invalid OpenXml rule item: " + definition);
+		}
+
+		properties = definition->Substring(
+			propertiesStart + 1,
+			propertiesEnd - propertiesStart - 1);
+		definition = definition->Substring(0, propertiesStart)->Trim();
+	}
 
     String^ fullName =
-        "DocumentFormat.OpenXml.Wordprocessing." + name;
+        "DocumentFormat.OpenXml.Wordprocessing." + definition;
 
     Type^ type = Type::GetType(
         fullName + ", DocumentFormat.OpenXml");
 
-    if (name->Contains("{"))
-    {
-        PropertyInfo^ pi = type->GetProperty("InnerText");
-
-        if (pi != nullptr)
-        {
-            Object^ value = Convert::ChangeType(sectionText, pi->PropertyType);
-            Object^ obj = Activator::CreateInstance(type);
-            pi->SetValue(obj, value, nullptr);
-
-            return obj;
-        }
-    }
-
     if (type == nullptr)
-        throw gcnew Exception("Unknown OpenXml type: " + name);
+        throw gcnew Exception("Unknown OpenXml type: " + definition);
 
-    return Activator::CreateInstance(type);
+	Object^ object = Activator::CreateInstance(type);
+	if (properties != nullptr)
+	{
+		for each (String^ assignment in properties->Split(','))
+		{
+			array<String^>^ pair = assignment->Split(gcnew array<wchar_t> { '=' }, 2);
+			if (pair->Length != 2)
+			{
+				throw gcnew FormatException("Invalid property assignment: " + assignment);
+			}
+
+			String^ value = pair[1]->Trim();
+			if (value == "%")
+			{
+				value = sectionText;
+			}
+			else if (value->Length >= 2 && value[0] == '"' && value[value->Length - 1] == '"')
+			{
+				value = value->Substring(1, value->Length - 2);
+			}
+
+			SetProperty(object, pair[0]->Trim(), value);
+		}
+	}
+
+	return object;
 }
 
-List<OpenXmlElement^>^ ClrParser::CreateObjectsFromRule(
+OpenXmlElement^ ClrParser::CreateObjectFromRule(
     String^ rule,
     MdSection* section)
 {
-    List<OpenXmlElement^>^ result =
-        gcnew List<OpenXmlElement^>();
+	if (section == nullptr || String::IsNullOrWhiteSpace(rule))
+		return nullptr;
 
-    String^ sectionText = gcnew String(section->GetText().c_str());
-
-    if (section == nullptr)
-        return result;
-
+	String^ sectionText = FromUtf8(section->GetContent());
     array<String^>^ partRule = rule->Split(';');
+	OpenXmlElement^ root = nullptr;
+	OpenXmlElement^ parent = nullptr;
 
     for each(String^ part in partRule)
     {
-        if (!String::IsNullOrEmpty(part))
+		if (!String::IsNullOrWhiteSpace(part))
         {
-            OpenXmlElement^ obj =
+			OpenXmlElement^ object =
                 safe_cast<OpenXmlElement^>(CreateObject(part->Trim(), sectionText));
 
-            if (obj != nullptr)
-                result->Add(obj);
+			if (root == nullptr)
+			{
+				root = object;
+			}
+			else
+			{
+				OpenXmlCompositeElement^ compositeParent =
+					dynamic_cast<OpenXmlCompositeElement^>(parent);
+				if (compositeParent == nullptr)
+				{
+					throw gcnew FormatException(
+						"OpenXml element cannot contain a child: " + parent->GetType()->Name);
+				}
+
+				compositeParent->AppendChild<OpenXmlElement^>(object);
+			}
+
+			parent = object;
         }
     }
 
-    return result;
+	return root;
 }

@@ -24,4 +24,8 @@ public:
 	{
 		return this->_text;
 	}
+
+	// Returns the value that must be written to the document, without
+	// Markdown block markers and the trailing line break.
+	std::string GetContent() const;
 };
