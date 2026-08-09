@@ -106,6 +106,26 @@ namespace
 
     int CreateDocumentCore(String^ outputPath, Document^ body)
     {
+        if (body == nullptr)
+        {
+            return static_cast<int>(XmlServiceStatus::invalid);
+        }
+
+        WordprocessingDocument^ document = WordprocessingDocument::Create(
+            outputPath,
+            WordprocessingDocumentType::Document);
+
+        try
+        {
+            MainDocumentPart^ mainPart = document->AddMainDocumentPart();
+            mainPart->Document = body;
+            mainPart->Document->Save();
+        }
+        finally
+        {
+            delete document;
+        }
+
         return static_cast<int>(XmlServiceStatus::ok);
     }
 }
