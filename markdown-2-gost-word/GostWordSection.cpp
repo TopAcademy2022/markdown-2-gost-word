@@ -8,21 +8,21 @@ using namespace DocumentFormat::OpenXml::Packaging;
 using namespace DocumentFormat::OpenXml::Wordprocessing;
 
 GostWordSection::GostWordSection()
-	: _sectionData(gcnew array<System::Object^>(0))
+	: _sectionData(nullptr)
 {
 }
 
-GostWordSection::GostWordSection(array<System::Object^>^ sectionData)
-	: _sectionData(sectionData == nullptr ? gcnew array<System::Object^>(0) : sectionData)
+GostWordSection::GostWordSection(OpenXmlElement^ sectionData)
+	: _sectionData(sectionData)
 {
 }
 
-array<System::Object^>^ GostWordSection::GetSectionData()
+OpenXmlElement^ GostWordSection::GetSectionData()
 {
 	return _sectionData;
 }
 
-Document^ GostWordSection::CombineListSections(std::list<GostWordSection*> sections)
+Document^ GostWordSection::CombineListSections(std::list<GostWordSection> sections)
 {
 	Body^ body = gcnew Body();
 	Paragraph^ currentParagraph = nullptr;

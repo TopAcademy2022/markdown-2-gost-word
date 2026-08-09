@@ -1,5 +1,7 @@
 #include "MdSection.h"
 
+#include <cctype>
+
 bool MdSection::CheckCorrectType(std::string text, MdSectionType sectionType)
 {
 	MdSectionRule mdRules;
@@ -30,4 +32,33 @@ MdSection::MdSection(std::string text, MdSectionType sectionType)
 MdSectionType MdSection::GetSectionType()
 {
 	return this->_sectionType;
+}
+
+std::string MdSection::GetContent() const
+{
+	std::string content = _text;
+
+	while (!content.empty() && (content.back() == '\n' || content.back() == '\r'))
+	{
+		content.pop_back();
+	}
+
+	if (_sectionType == MdSectionType::title)
+	{
+		size_t markerEnd = 0;
+		while (markerEnd < content.size() && content[markerEnd] == '#')
+		{
+			++markerEnd;
+		}
+
+		while (markerEnd < content.size()
+			&& std::isspace(static_cast<unsigned char>(content[markerEnd])))
+		{
+			++markerEnd;
+		}
+
+		content.erase(0, markerEnd);
+	}
+
+	return content;
 }
