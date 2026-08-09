@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <iterator>
 
 #include "MdSection.h"
 #include "MdSectionConverter.h"
@@ -125,6 +126,11 @@ int main()
                 std::wcout << L"Error: unable to save the result document. Code: " << static_cast<int>(result) << L"\n";
                 PrintOpenXmlError();
             }
+
+			for (MdSection* section : sections)
+			{
+				delete section;
+			}
         }
     }
 }

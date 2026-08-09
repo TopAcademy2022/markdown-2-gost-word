@@ -3,6 +3,14 @@
 #include <string>
 #include <list>
 
+namespace
+{
+	bool IsBlankLine(const std::string& line)
+	{
+		return line.find_first_not_of(" \t\r") == std::string::npos;
+	}
+}
+
 std::list<MdSection*> MdSectionParser::ParseText(std::string text)
 {
     std::list<MdSection*> result;
@@ -19,7 +27,7 @@ std::list<MdSection*> MdSectionParser::ParseText(std::string text)
 
     while (std::getline(stream, line))
     {
-        if (line.empty())
+		if (IsBlankLine(line))
         {
             if (!segment.empty())
             {
@@ -33,6 +41,11 @@ std::list<MdSection*> MdSectionParser::ParseText(std::string text)
         }
         else
         {
+			if (!line.empty() && line.back() == '\r')
+			{
+				line.pop_back();
+			}
+
             segment += line + "\n";
         }
     }
