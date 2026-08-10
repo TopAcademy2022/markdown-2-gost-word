@@ -28,9 +28,9 @@ Document^ GostWordSection::CombineListSections(std::list<GostWordSection> sectio
 	Paragraph^ currentParagraph = nullptr;
 	Run^ currentRun = nullptr;
 
-	for (GostWordSection* section : sections)
+	for (GostWordSection& section : sections)
 	{
-		for each(System::Object ^ obj in section->GetSectionData())
+		for each(System::Object ^ obj in section.GetSectionData())
 		{
 			OpenXmlElement^ element = dynamic_cast<OpenXmlElement^>(obj);
 
