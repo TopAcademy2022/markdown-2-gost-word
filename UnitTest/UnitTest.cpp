@@ -62,5 +62,20 @@ namespace UnitTest
 			MdSection plainTextSec("Plain text with # inside", MdSectionType::text);
 			Assert::AreEqual(std::string("Plain text with # inside"), plainTextSec.GetContent());
 		}
+
+		TEST_METHOD(HeadingLevels_ParsedCorrectly)
+		{
+			MdSection h1("# Level 1", MdSectionType::title);
+			Assert::AreEqual(1, h1.GetHeadingLevel());
+
+			MdSection h3("### Level 3", MdSectionType::title);
+			Assert::AreEqual(3, h3.GetHeadingLevel());
+
+			MdSection h6("###### Level 6", MdSectionType::title);
+			Assert::AreEqual(6, h6.GetHeadingLevel());
+
+			MdSection text("Plain text without hashes", MdSectionType::text);
+			Assert::AreEqual(0, text.GetHeadingLevel());
+		}
 	};
 }
