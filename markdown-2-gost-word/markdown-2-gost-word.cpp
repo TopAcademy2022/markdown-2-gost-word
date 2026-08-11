@@ -68,6 +68,7 @@ int main()
         if (command == L"1")
             CreateTestDocument();
         if (command == L"2") {
+            const std::wstring inputPath = L"./example.md";
 
             // Read MD
             const std::wstring inputPath = L"./example.md";
@@ -127,10 +128,10 @@ int main()
                 PrintOpenXmlError();
             }
 
-			for (MdSection* section : sections)
-			{
-				delete section;
-			}
+      for (MdSection* section : sections)
+      {
+        delete section;
+      }
         }
     }
 }
