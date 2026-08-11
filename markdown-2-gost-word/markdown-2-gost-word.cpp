@@ -151,21 +151,63 @@ int wmain(int argc, wchar_t* argv[])
     // No arguments: run the interactive menu
     if (argc == 1)
     {
-        bool isRunning = true;
+        PrintMenu();
 
-        while (isRunning)
-        {
-            PrintMenu();
+        std::wstring command;
+        std::getline(std::wcin, command);
 
-            std::wstring command;
-            std::getline(std::wcin, command);
+        if (command == L"0")
+            isRunning = false;
+        if (command == L"1")
+            CreateTestDocument();
+        if (command == L"2") {
+            const std::wstring inputPath = L"./example.md";
 
-            if (command == L"0")
-                isRunning = false;
-            if (command == L"1")
-                CreateTestDocument();
-            if (command == L"2")
-                ConvertMarkdownToGostWord(L"./example.md", L"./result.docx");
+            // Read MD
+      std::ifstream file("./example.md", std::ios::binary);
+      if (!file.is_open())
+      {
+          std::wcout << L"Could not open input file: " << inputPath << L"\n";
+          continue;
+      }
+
+      std::string fileData(
+          (std::istreambuf_iterator<char>(file)),
+        std::istreambuf_iterator<char>());
+
+            // Separate our text to logical sections
+            // List with our logical sections
+            std::list<MdSection*> sections = MdSectionParser::ParseText(fileData);
+
+            // If list not empty
+          if (!sections.empty())
+          {
+                  std::wcout << L"No supported Markdown sections found in: " << inputPath << L"\n";
+          }
+          else
+          {
+                // Converting markdown logical sections to word sections
+                MdSectionConverter converter(sections);
+                // Save word sections to word file
+                XmlServiceStatus result = converter.SaveToGostWord(L"./result.docx");
+
+                if (result == XmlServiceStatus::ok)
+                {
+                    std::wcout << L"Parsing has been complete.\n";
+                }
+                else{
+                std::wcout << L"Document was not created. Code: "
+                        << static_cast<int>(result) << L"\n";
+                PrintOpenXmlError();
+                }
+
+
+            }
+
+      for (MdSection* section : sections)
+      {
+        delete section;
+      }
         }
 
         return 0;
