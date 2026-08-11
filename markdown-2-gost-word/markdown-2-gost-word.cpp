@@ -70,8 +70,6 @@ int main()
         if (command == L"2") {
             const std::wstring inputPath = L"./example.md";
 
-            // Read MD
-            const std::wstring inputPath = L"./example.md";
             std::ifstream file(inputPath);
 
             // Ensure the input Markdown file was successfully opened
