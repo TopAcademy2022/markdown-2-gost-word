@@ -137,6 +137,21 @@ OpenXmlElement^ ClrParser::CreateObjectFromRule(
 			if (root == nullptr)
 			{
 				root = object;
+
+				if (section->GetSectionType() == MdSectionType::title) {
+					Paragraph^ paragraph = dynamic_cast<Paragraph^>(object);
+					if (paragraph != nullptr) {
+						ParagraphProperties^ pPr = paragraph->ParagraphProperties;
+						if (pPr == nullptr) {
+							pPr = gcnew ParagraphProperties();
+							paragraph->PrependChild(pPr);
+						}
+						ParagraphStyleId^ styleId = gcnew ParagraphStyleId();
+						styleId->Val = "Heading" + section->GetHeadingLevel();
+
+						pPr->AppendChild(styleId);
+					}
+				}
 			}
 			else
 			{

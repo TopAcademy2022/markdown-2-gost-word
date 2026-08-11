@@ -16,12 +16,20 @@ bool MdSection::CheckCorrectType(std::string text, MdSectionType sectionType)
 }
 
 MdSection::MdSection(std::string text, MdSectionType sectionType)
-	: _sectionType(MdSectionType::text)
+	: _sectionType(MdSectionType::text), _headingLevel(0)
 {
 	if (CheckCorrectType(text, sectionType))
 	{
 		this->_text = text;
 		this->_sectionType = sectionType;
+
+		if (sectionType == MdSectionType::title) {
+			size_t count = 0;
+			while (count < text.size() && text[count] == '#') {
+				++count;
+			}
+			this->_headingLevel = static_cast<int>(count);
+		}
 	}
 	else
 	{

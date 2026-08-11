@@ -10,8 +10,10 @@ class MdSection
 {
 private:
 	MdSectionType _sectionType;
-
+	
 	std::string _text;
+
+	int _headingLevel;
 
 	bool CheckCorrectType(std::string text, MdSectionType sectionType);
 
@@ -20,6 +22,9 @@ public:
 
 	MdSectionType GetSectionType();
 
+	int GetHeadingLevel() const {
+		return this->_headingLevel;
+	}
 	std::string GetText()
 	{
 		return this->_text;
