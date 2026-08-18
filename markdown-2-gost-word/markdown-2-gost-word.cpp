@@ -70,51 +70,66 @@ int main()
         if (command == L"2") {
             const std::wstring inputPath = L"./example.md";
 
-            // Read MD
-      std::ifstream file("./example.md", std::ios::binary);
-      if (!file.is_open())
-      {
-          std::wcout << L"Could not open input file: " << inputPath << L"\n";
-          continue;
-      }
+            std::ifstream file(inputPath);
 
-      std::string fileData(
-          (std::istreambuf_iterator<char>(file)),
-        std::istreambuf_iterator<char>());
+            // Ensure the input Markdown file was successfully opened
+            if (!file.is_open())
+            {
+                std::wcout << L"Error: unable to open the file \"" << inputPath << L"\".\n";
+                std::wcout << L"Make sure the file exists and is readable.\n";
+                continue;
+            }
+
+            std::string fileData((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+            // Check the stream state after reading
+            if (file.bad())
+            {
+                file.close();
+                std::wcout << L"Error: failed to read the file \"" << inputPath << L"\".\n";
+                continue;
+            }
+
+            file.close();
+
+            // An empty input file must not be treated as a successful conversion
+            if (fileData.empty())
+            {
+                std::wcout << L"Error: the input file \"" << inputPath << L"\" is empty.\n";
+                continue;
+            }
 
             // Separate our text to logical sections
             // List with our logical sections
             std::list<MdSection*> sections = MdSectionParser::ParseText(fileData);
 
-            // If list not empty
-          if (!sections.empty())
-          {
-                  std::wcout << L"No supported Markdown sections found in: " << inputPath << L"\n";
-          }
-          else
-          {
-                // Converting markdown logical sections to word sections
-                MdSectionConverter converter(sections);
-                // Save word sections to word file
-                XmlServiceStatus result = converter.SaveToGostWord(L"./result.docx");
-
-                if (result == XmlServiceStatus::ok)
-                {
-                    std::wcout << L"Parsing has been complete.\n";
-                }
-                else{
-                std::wcout << L"Document was not created. Code: "
-                        << static_cast<int>(result) << L"\n";
-                PrintOpenXmlError();
-                }
-
-
+            // If list is empty, the file does not contain supported sections
+            if (sections.empty())
+            {
+                std::wcout << L"Error: no supported sections were found in the file \"" << inputPath << L"\".\n";
+                std::wcout << L"The file must contain supported Markdown sections (e.g. headings, paragraphs).\n";
+                continue;
             }
 
-      for (MdSection* section : sections)
-      {
-        delete section;
-      }
+            // Converting markdown logical sections to word sections
+            MdSectionConverter converter(sections);
+            // Save word sections to word file
+            XmlServiceStatus result = converter.SaveToGostWord(L"./result.docx");
+
+            if (result == XmlServiceStatus::ok)
+            {
+                std::wcout << L"Parsing has been complete.\n";
+            }
+            else
+            {
+                std::wcout << L"Error: unable to save the result document. Code: " << static_cast<int>(result) << L"\n";
+                PrintOpenXmlError();
+            }
+
+            for (MdSection* section : sections)
+            {
+                delete section;
+            }
         }
     }
 }

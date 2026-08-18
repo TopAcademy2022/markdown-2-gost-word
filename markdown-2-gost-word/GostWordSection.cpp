@@ -1,4 +1,11 @@
 #include "GostWordSection.h"
+#include <iostream>
+#include <string>
+#include <fstream>
+
+using namespace DocumentFormat::OpenXml;
+using namespace DocumentFormat::OpenXml::Packaging;
+using namespace DocumentFormat::OpenXml::Wordprocessing;
 
 GostWordSection::GostWordSection()
 	: _sectionData(nullptr)
@@ -18,12 +25,23 @@ OpenXmlElement^ GostWordSection::GetSectionData()
 Document^ GostWordSection::CombineListSections(std::list<GostWordSection> sections)
 {
 	Body^ body = gcnew Body();
+
 	for (GostWordSection& section : sections)
 	{
 		OpenXmlElement^ root = section.GetSectionData();
-		if (root != nullptr)
+		if (root == nullptr)
 		{
-			body->AppendChild<OpenXmlElement^>(root);
+			continue;
+		}
+
+		for each(System::Object ^ obj in root)
+		{
+			OpenXmlElement^ element = dynamic_cast<OpenXmlElement^>(obj);
+
+			if (element != nullptr)
+			{
+				body->Append(element->CloneNode(true));
+			}
 		}
 	}
 
