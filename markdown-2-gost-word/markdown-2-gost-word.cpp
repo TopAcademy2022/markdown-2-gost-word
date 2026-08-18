@@ -126,10 +126,10 @@ int main()
                 PrintOpenXmlError();
             }
 
-      for (MdSection* section : sections)
-      {
-        delete section;
-      }
+            for (MdSection* section : sections)
+            {
+                delete section;
+            }
         }
     }
 }

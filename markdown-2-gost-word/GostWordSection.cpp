@@ -25,12 +25,16 @@ OpenXmlElement^ GostWordSection::GetSectionData()
 Document^ GostWordSection::CombineListSections(std::list<GostWordSection> sections)
 {
 	Body^ body = gcnew Body();
-	Paragraph^ currentParagraph = nullptr;
-	Run^ currentRun = nullptr;
 
 	for (GostWordSection& section : sections)
 	{
-		for each(System::Object ^ obj in section.GetSectionData())
+		OpenXmlElement^ root = section.GetSectionData();
+		if (root == nullptr)
+		{
+			continue;
+		}
+
+		for each(System::Object ^ obj in root)
 		{
 			OpenXmlElement^ element = dynamic_cast<OpenXmlElement^>(obj);
 
@@ -41,6 +45,7 @@ Document^ GostWordSection::CombineListSections(std::list<GostWordSection> sectio
 		}
 	}
 
-	// TODO: how combine to 1 Document
-	return gcnew Document();
+	Document^ document = gcnew Document();
+	document->AppendChild<Body^>(body);
+	return document;
 }
