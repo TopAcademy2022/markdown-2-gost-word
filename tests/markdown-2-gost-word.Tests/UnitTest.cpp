@@ -8,33 +8,38 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTest
 {
-	TEST_CLASS(UnitTest)
+	TEST_CLASS(MdSectionRuleTests)
 	{
 	public:
-		
+
 		TEST_METHOD(ValidHeadings_ParsedAsTitle)
 		{
 			MdSectionRule rule;
 
-			const MdSectionType* type1 = rule.GetTypeFromStartRules("# Heading");
-			Assert::IsNotNull(type1);
-			Assert::IsTrue(*type1 == MdSectionType::title);
+			const char* validHeadings[] = {
+				"# Heading 1",
+				"## Heading 2",
+				"### Heading 3",
+				"#### Heading 4",
+				"##### Heading 5",
+				"###### Heading 6"
+			};
 
-			const MdSectionType* type6 = rule.GetTypeFromStartRules("###### Heading");
-			Assert::IsNotNull(type6);
-			Assert::IsTrue(*type6 == MdSectionType::title);
+			for (const char* heading : validHeadings)
+			{
+				const MdSectionType* type = rule.GetTypeFromStartRules(heading);
+				Assert::IsNotNull(type);
+				Assert::IsTrue(*type == MdSectionType::title);
+			}
 		}
 
-		TEST_METHOD(SingleHash_ParsedAsEmptyTitle)
+		TEST_METHOD(SingleHash_ParsedAsTitle)
 		{
 			MdSectionRule rule;
 
 			const MdSectionType* type = rule.GetTypeFromStartRules("#");
 			Assert::IsNotNull(type);
 			Assert::IsTrue(*type == MdSectionType::title);
-
-			MdSection section("#", MdSectionType::title);
-			Assert::AreEqual(std::string(""), section.GetContent());
 		}
 
 		TEST_METHOD(InvalidHeadingsAndPlainText_ParsedAsText)
@@ -45,19 +50,39 @@ namespace UnitTest
 			Assert::IsNotNull(noSpaceType);
 			Assert::IsTrue(*noSpaceType == MdSectionType::text);
 
-			MdSection noSpaceSec("#NoSpace", MdSectionType::text);
-			Assert::AreEqual(std::string("#NoSpace"), noSpaceSec.GetContent());
-
 			const MdSectionType* sevenHashesType = rule.GetTypeFromStartRules("####### Heading");
 			Assert::IsNotNull(sevenHashesType);
 			Assert::IsTrue(*sevenHashesType == MdSectionType::text);
 
-			MdSection sevenHashesSec("####### Heading", MdSectionType::text);
-			Assert::AreEqual(std::string("####### Heading"), sevenHashesSec.GetContent());
-
 			const MdSectionType* plainTextType = rule.GetTypeFromStartRules("Plain text with # inside");
 			Assert::IsNotNull(plainTextType);
 			Assert::IsTrue(*plainTextType == MdSectionType::text);
+		}
+	};
+
+	TEST_CLASS(MdSectionTests)
+	{
+	public:
+
+		TEST_METHOD(GetContent_RemovesHeadingMarkers)
+		{
+			MdSection section("# Heading", MdSectionType::title);
+			Assert::AreEqual(std::string("Heading"), section.GetContent());
+		}
+
+		TEST_METHOD(GetContent_SingleHash_ReturnsEmptyString)
+		{
+			MdSection section("#", MdSectionType::title);
+			Assert::AreEqual(std::string(""), section.GetContent());
+		}
+
+		TEST_METHOD(GetContent_PlainText_PreservesFullText)
+		{
+			MdSection noSpaceSec("#NoSpace", MdSectionType::text);
+			Assert::AreEqual(std::string("#NoSpace"), noSpaceSec.GetContent());
+
+			MdSection sevenHashesSec("####### Heading", MdSectionType::text);
+			Assert::AreEqual(std::string("####### Heading"), sevenHashesSec.GetContent());
 
 			MdSection plainTextSec("Plain text with # inside", MdSectionType::text);
 			Assert::AreEqual(std::string("Plain text with # inside"), plainTextSec.GetContent());

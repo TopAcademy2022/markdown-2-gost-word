@@ -40,9 +40,9 @@ const MdSectionType* MdSectionRule::GetTypeFromStartRules(std::string text)
 
 	if (!text.empty() && text[0] == '#')
 	{
-		size_t hashtagCount = 0;
-		while (hashtagCount < text.size() && text[hashtagCount] == '#') {
-			++hashtagCount;
+		size_t hashtagCount = text.find_first_not_of('#');
+		if (hashtagCount == std::string::npos) {
+			hashtagCount = text.size();
 		}
 		if (hashtagCount >= 1 && hashtagCount <= 6) {
 			if (hashtagCount == text.size() || std::isspace(static_cast<unsigned char>(text[hashtagCount]))) {
