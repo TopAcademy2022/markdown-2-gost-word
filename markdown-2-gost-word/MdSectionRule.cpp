@@ -1,7 +1,7 @@
 #include "MdSectionRule.h"
 
 #include <cctype>
-
+	
 namespace
 {
 	bool IsListItem(const std::string& text)
@@ -40,7 +40,16 @@ const MdSectionType* MdSectionRule::GetTypeFromStartRules(std::string text)
 
 	if (!text.empty() && text[0] == '#')
 	{
-		return &titleType;
+		size_t hashtagCount = text.find_first_not_of('#');
+		if (hashtagCount == std::string::npos) {
+			hashtagCount = text.size();
+		}
+		if (hashtagCount >= 1 && hashtagCount <= 6) {
+			if (hashtagCount == text.size() || std::isspace(static_cast<unsigned char>(text[hashtagCount]))) {
+				return &titleType;
+			}
+		}
+		
 	}
 
 	// Lists are deliberately unsupported until a corresponding section type
