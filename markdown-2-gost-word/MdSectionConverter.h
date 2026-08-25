@@ -14,7 +14,7 @@
 class MdSectionConverter
 {
 private:
-	std::list<GostWordSection*> _gostWordSection;
+	std::list<GostWordSection> _gostWordSection;
 
 	void ConvertToGostSections(std::list<MdSection*> sections);
 

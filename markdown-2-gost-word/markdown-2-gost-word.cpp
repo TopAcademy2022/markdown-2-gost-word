@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <iterator>
 
 #include "MdSection.h"
 #include "MdSectionConverter.h"
@@ -67,24 +68,31 @@ int main()
         if (command == L"1")
             CreateTestDocument();
         if (command == L"2") {
+            const std::wstring inputPath = L"./example.md";
 
             // Read MD
-            std::ifstream file("./example.md");
-            int dataSize = 2048;
-            char* fileData = new char[dataSize]();
+      std::ifstream file("./example.md", std::ios::binary);
+      if (!file.is_open())
+      {
+          std::wcout << L"Could not open input file: " << inputPath << L"\n";
+          continue;
+      }
 
-            if (file.is_open())
-            {
-                file.read(fileData, dataSize);
-            }
+      std::string fileData(
+          (std::istreambuf_iterator<char>(file)),
+        std::istreambuf_iterator<char>());
 
             // Separate our text to logical sections
             // List with our logical sections
             std::list<MdSection*> sections = MdSectionParser::ParseText(fileData);
 
             // If list not empty
-        	if (!sections.empty())
-            {
+          if (!sections.empty())
+          {
+                  std::wcout << L"No supported Markdown sections found in: " << inputPath << L"\n";
+          }
+          else
+          {
                 // Converting markdown logical sections to word sections
                 MdSectionConverter converter(sections);
                 // Save word sections to word file
@@ -94,7 +102,19 @@ int main()
                 {
                     std::wcout << L"Parsing has been complete.\n";
                 }
+                else{
+                std::wcout << L"Document was not created. Code: "
+                        << static_cast<int>(result) << L"\n";
+                PrintOpenXmlError();
+                }
+
+
             }
+
+      for (MdSection* section : sections)
+      {
+        delete section;
+      }
         }
     }
 }
