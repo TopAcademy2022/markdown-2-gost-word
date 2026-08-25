@@ -1,4 +1,11 @@
 #include "GostWordSection.h"
+#include <iostream>
+#include <string>
+#include <fstream>
+
+using namespace DocumentFormat::OpenXml;
+using namespace DocumentFormat::OpenXml::Packaging;
+using namespace DocumentFormat::OpenXml::Wordprocessing;
 
 GostWordSection::GostWordSection()
 	: _sectionData(nullptr)
