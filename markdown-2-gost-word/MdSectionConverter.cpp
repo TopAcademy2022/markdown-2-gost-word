@@ -55,3 +55,12 @@ XmlServiceStatus MdSectionConverter::SaveToGostWord(const std::wstring& outputPa
 
 	return static_cast<XmlServiceStatus>(result);
 }
+
+XmlServiceStatus MdSectionConverter::SaveToGostWord(const std::wstring& outputPath, const FormattingProfile& profile)
+{
+	Document^ body = GostWordSection::CombineListSections(this->_gostWordSection);
+
+	int result = OpenXmlService_CreateDocument(outputPath.c_str(), body);
+
+	return static_cast<XmlServiceStatus>(result);
+}

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "FormattingProfile.h"
+
 
 #include <functional>
 #include <list>
@@ -23,5 +25,6 @@ public:
 	~MdSectionConverter();
 
 	XmlServiceStatus SaveToGostWord(const std::wstring& outputPath);
+	XmlServiceStatus SaveToGostWord(const std::wstring& outputPath, const FormattingProfile& profile);
 };
 

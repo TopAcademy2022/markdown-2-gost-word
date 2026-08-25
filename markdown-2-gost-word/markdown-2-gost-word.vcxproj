@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClrParser.cpp" />
+    <ClCompile Include="FormattingProfile.cpp" />
     <ClCompile Include="GostWordSection.cpp" />
     <ClCompile Include="markdown-2-gost-word.cpp" />
     <ClCompile Include="MdSection.cpp" />
@@ -138,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClrParser.h" />
+    <ClInclude Include="FormattingProfile.h" />
     <ClInclude Include="GostWordSection.h" />
     <ClInclude Include="MdSection.h" />
     <ClInclude Include="MdSectionConverter.h" />

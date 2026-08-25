@@ -9,6 +9,7 @@
 #include "MdSection.h"
 #include "MdSectionConverter.h"
 #include "MdSectionParser.h"
+#include "FormattingProfile.h"
 
 namespace
 {
@@ -86,17 +87,26 @@ int main()
             // List with our logical sections
             std::list<MdSection*> sections = MdSectionParser::ParseText(fileData);
 
-            // If list not empty
-          if (!sections.empty())
+            // If list empty
+          if (sections.empty())
           {
                   std::wcout << L"No supported Markdown sections found in: " << inputPath << L"\n";
           }
           else
           {
+                // Load formatting profile
+                auto profileResult = LoadFormattingProfile("profiles/gost.json");
+                if (!profileResult.ok)
+                {
+                    std::wcerr << L"Profile error: " << profileResult.error.c_str() << L"\n";
+                    for (MdSection* section : sections) delete section;
+                    continue;
+                }
+
                 // Converting markdown logical sections to word sections
                 MdSectionConverter converter(sections);
-                // Save word sections to word file
-                XmlServiceStatus result = converter.SaveToGostWord(L"./result.docx");
+                // Save word sections to word file with profile
+                XmlServiceStatus result = converter.SaveToGostWord(L"./result.docx", profileResult.profile);
 
                 if (result == XmlServiceStatus::ok)
                 {
