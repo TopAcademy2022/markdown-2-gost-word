@@ -1,5 +1,6 @@
 #include "OpenXmlApi.h"
 #include "OpenXmlService.h"
+#include "FormattingApplier.h"
 
 #include <vcclr.h>
 
@@ -44,10 +45,10 @@ public:
         array<String^>^ candidates = gcnew array<String^>
         {
             Path::Combine(assemblyDirectory, requested->Name + ".dll"),
-            Path::Combine(assemblyDirectory, "thirdparty\\openxml\\net46\\" + requested->Name + ".dll")
+                Path::Combine(assemblyDirectory, "thirdparty\\openxml\\net46\\" + requested->Name + ".dll")
         };
 
-        for each (String^ candidate in candidates)
+        for each (String ^ candidate in candidates)
         {
             if (File::Exists(candidate))
             {
@@ -122,6 +123,35 @@ namespace
         }
         return static_cast<int>(XmlServiceStatus::ok);
     }
+
+    int CreateDocumentCore(String^ outputPath, Document^ body, const FormattingProfile* profile)
+    {
+        WordprocessingDocument^ document = WordprocessingDocument::Create(
+            outputPath,
+            WordprocessingDocumentType::Document);
+
+        try
+        {
+            MainDocumentPart^ mainPart = document->AddMainDocumentPart();
+            mainPart->Document = body;
+
+            if (profile != nullptr)
+            {
+                XmlServiceStatus applyStatus = ApplyFormattingProfile(mainPart, *profile);
+                if (applyStatus != XmlServiceStatus::ok)
+                {
+                    return static_cast<int>(applyStatus);
+                }
+            }
+
+            mainPart->Document->Save();
+        }
+        finally
+        {
+            delete document;
+        }
+        return static_cast<int>(XmlServiceStatus::ok);
+    }
 }
 
 int OpenXmlService_IsAvailable()
@@ -170,6 +200,32 @@ int OpenXmlService_CreateDocument(const wchar_t* outputPath, Document^ body)
         OpenXmlAssemblyResolver::Install();
         SetLastError(String::Empty);
         return CreateDocumentCore(gcnew String(outputPath), body);
+    }
+    catch (Exception^ ex)
+    {
+        SetLastError(ex->ToString());
+        return static_cast<int>(XmlServiceStatus::open_xml_error);
+    }
+    catch (...)
+    {
+        SetLastError("Unknown native exception.");
+        return static_cast<int>(XmlServiceStatus::unknown_error);
+    }
+}
+
+int OpenXmlService_CreateDocument(const wchar_t* outputPath, Document^ body, const FormattingProfile* profile)
+{
+    if (outputPath == nullptr || outputPath[0] == L'\0')
+    {
+        SetLastError("Output path is empty.");
+        return static_cast<int>(XmlServiceStatus::invalid);
+    }
+
+    try
+    {
+        OpenXmlAssemblyResolver::Install();
+        SetLastError(String::Empty);
+        return CreateDocumentCore(gcnew String(outputPath), body, profile);
     }
     catch (Exception^ ex)
     {

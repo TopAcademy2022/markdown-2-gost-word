@@ -60,7 +60,11 @@ XmlServiceStatus MdSectionConverter::SaveToGostWord(const std::wstring& outputPa
 {
 	Document^ body = GostWordSection::CombineListSections(this->_gostWordSection);
 
-	int result = OpenXmlService_CreateDocument(outputPath.c_str(), body);
+	// FIX: the previous version called the 2-arg overload here, silently
+	// dropping `profile` — the exact "PROFILE LOST" bug described in the
+	// phase2-3 plan. Now routes through the 3-arg overload so
+	// ApplyFormattingProfile actually runs before Save().
+	int result = OpenXmlService_CreateDocument(outputPath.c_str(), body, &profile);
 
 	return static_cast<XmlServiceStatus>(result);
 }
